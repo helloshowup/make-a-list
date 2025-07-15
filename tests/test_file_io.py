@@ -27,3 +27,10 @@ def test_write_atomic(tmp_path: Path):
     # ensure no temporary files remain
     files = list(tmp_path.iterdir())
     assert files == [target]
+
+
+def test_write_atomic_creates_parents(tmp_path: Path):
+    nested_target = tmp_path / "subdir" / "nested" / "file.txt"
+    write_atomic(nested_target, "content")
+    assert nested_target.read_text() == "content"
+    assert (tmp_path / "subdir" / "nested").is_dir()
