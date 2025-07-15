@@ -26,6 +26,7 @@ def run(
     ),
     model: str = typer.Option("o3", "--model", help="OpenAI model to use"),
     temp: float = typer.Option(0.2, "--temp", help="Sampling temperature"),
+    max_tokens: int | None = typer.Option(None, "--max-tokens", help="Max tokens for completion"),
     verbose: bool = typer.Option(
         False, "--verbose", "-v", help="Enable verbose output"
     ),
@@ -39,12 +40,13 @@ def run(
     if verbose:
         typer.echo(f"Folder: {folder}")
         typer.echo(f"Prompts: {', '.join(str(p) for p in prompts)}")
-        typer.echo(f"Model: {model} Temperature: {temp}")
+        typer.echo(f"Model: {model} Temperature: {temp} Max tokens: {max_tokens}")
     process_folder(
         folder,
         list(prompts),
         model=model,
         temp=temp,
+        max_tokens=max_tokens,
         dry_run=dry_run,
         verbose=verbose,
     )
