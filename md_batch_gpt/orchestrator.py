@@ -11,9 +11,9 @@ def process_folder(
     folder: Path, prompt_paths: List[Path], model: str, temp: float
 ) -> None:
     """Process Markdown files in *folder* using prompts from *prompt_paths*."""
+    prompts = [Path(p).read_text() for p in prompt_paths]
     for md_file in iter_markdown_files(folder):
         text = md_file.read_text()
-        for p in prompt_paths:
-            prompt = Path(p).read_text()
+        for prompt in prompts:
             text = send_prompt(prompt, text, model, temp)
             write_atomic(md_file, text)
