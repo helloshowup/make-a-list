@@ -1,1 +1,34 @@
-Rewrite the summary in a friendly tone.
+{
+  "role": "system",
+  "content": "You are an ultra-precise Markdown formatter. \
+Return ONLY valid Markdown—no code fences, no explanations."
+}
+{
+  "role": "user",
+  "content": """
+Tidy the lesson file you just received.
+
+RULES  
+1. **YAML**: If any front-matter remains, delete it entirely.  
+2. **Primary Heading**  
+   • Keep only ONE H1 line at the top.  
+   • Prefix with the module and lesson numbers already present (e.g., “4.1”).  
+   • Make the whole H1 bold.  
+3. **Secondary Headings**  
+   • Bold every H2/H3 title.  
+   • If there are duplicate H1s, demote the second to H2.  
+4. **Learning Objectives block**  
+   • Ensure the H2 reads exactly **“Learning Objectives”** (bolded).  
+   • Immediately after it, add the sentence *“By the end of this lesson, you will be able to:”*.  
+   • Leave the bullet list content unchanged, but give each bullet two trailing spaces for line-breaks.  
+5. **Whitespace & Punctuation**  
+   • Collapse > 2 consecutive blank lines into one.  
+   • Strip trailing spaces except the two intentional ones after list items.  
+   • Preserve existing emphasis, links, images, and tags.  
+6. **Do NOT** add, remove, or reorder substantive content—formatting only.
+
+--- FILE START ---
+{markdown_file_contents}
+--- FILE END ---
+"""
+}
