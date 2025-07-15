@@ -1,11 +1,19 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 import typer
 
 from .orchestrator import process_folder
+
+
+def validate_prompts(_: typer.Context, value: Tuple[Path, ...]) -> List[Path]:
+    """Return *value* if all paths exist, otherwise raise BadParameter."""
+    for p in value:
+        if not p.exists():
+            raise typer.BadParameter(f"File not found: {p}")
+    return list(value)
 
 app = typer.Typer()
 
@@ -14,7 +22,7 @@ app = typer.Typer()
 def run(
     folder: Path = typer.Argument(..., exists=True, file_okay=False, dir_okay=True),
     prompts: List[Path] = typer.Option(
-        ..., "--prompts", help="Space-separated list of prompt files", exists=True
+        ..., "--prompts", help="Space-separated list of prompt files", nargs=-1, callback=validate_prompts
     ),
     model: str = typer.Option("o3", "--model", help="OpenAI model to use"),
     temp: float = typer.Option(0.2, "--temp", help="Sampling temperature"),
