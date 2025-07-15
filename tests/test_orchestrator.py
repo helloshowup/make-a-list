@@ -99,8 +99,8 @@ def test_process_folder_verbose(monkeypatch, tmp_path: Path, capsys):
     orch.process_folder(tmp_path, [p1, p2], model="m", temp=0.5, verbose=True)
 
     out_lines = capsys.readouterr().out.splitlines()
-    assert f"a.md: pass 1/2" in out_lines[0]
-    assert f"a.md: pass 2/2" in out_lines[1]
+    assert "a.md: pass 1/2" in out_lines[0]
+    assert "a.md: pass 2/2" in out_lines[1]
 
 
 def test_process_folder_max_tokens(monkeypatch, tmp_path: Path):
