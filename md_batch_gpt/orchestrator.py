@@ -5,10 +5,16 @@ from typing import List
 
 from .file_io import iter_markdown_files, write_atomic
 from .openai_client import send_prompt
+import typer
 
 
 def process_folder(
-    folder: Path, prompt_paths: List[Path], model: str, temp: float, dry_run: bool = False
+    folder: Path,
+    prompt_paths: List[Path],
+    model: str,
+    temp: float,
+    dry_run: bool = False,
+    verbose: bool = False,
 ) -> None:
     """Process Markdown files in *folder* using prompts from *prompt_paths*.
 
@@ -25,6 +31,8 @@ def process_folder(
 
     for md_file in files:
         text = md_file.read_text()
-        for prompt in prompts:
+        for idx, prompt in enumerate(prompts):
+            if verbose:
+                typer.echo(f"{md_file}: pass {idx+1}/{len(prompts)}")
             text = send_prompt(prompt, text, model, temp)
             write_atomic(md_file, text)

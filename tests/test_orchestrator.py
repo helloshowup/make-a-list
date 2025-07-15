@@ -65,3 +65,27 @@ def test_process_folder_dry_run(monkeypatch, tmp_path: Path, capsys):
     assert "a.md" in out
     assert "b.md" in out
     assert "Prompt count: 1" in out
+
+
+def test_process_folder_verbose(monkeypatch, tmp_path: Path, capsys):
+    monkeypatch.setenv("OPENAI_API_KEY", "dummy")
+    orch = import_orchestrator()
+
+    def fake_send_prompt(prompt: str, content: str, model: str, temp: float) -> str:
+        return f"{content}[{prompt}]"
+
+    monkeypatch.setattr(orch, "send_prompt", fake_send_prompt)
+
+    md = tmp_path / "a.md"
+    md.write_text("A")
+
+    p1 = tmp_path / "p1.txt"
+    p1.write_text("p1")
+    p2 = tmp_path / "p2.txt"
+    p2.write_text("p2")
+
+    orch.process_folder(tmp_path, [p1, p2], model="m", temp=0.5, verbose=True)
+
+    out_lines = capsys.readouterr().out.splitlines()
+    assert f"a.md: pass 1/2" in out_lines[0]
+    assert f"a.md: pass 2/2" in out_lines[1]
