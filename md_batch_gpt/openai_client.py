@@ -16,7 +16,7 @@ _client = openai.OpenAI(api_key=OPENAI_API_KEY)
 def _chat_request(messages: Iterable[dict], model: str, temperature: float):
     """Send a chat completion request with retry logic."""
     last_exc: Exception | None = None
-    for attempt in range(3):
+    for attempt in range(4):
         try:
             response = _client.chat.completions.create(
                 model=model,
@@ -30,7 +30,9 @@ def _chat_request(messages: Iterable[dict], model: str, temperature: float):
             last_exc = exc
             if exc.status_code not in {429, 502}:
                 raise
-        if attempt < 2:
+        except openai.APIConnectionError as exc:
+            last_exc = exc
+        if attempt < 3:
             time.sleep(2**attempt)
     # If we fall through, raise the last captured exception
     if last_exc:
