@@ -19,10 +19,9 @@ def test_process_folder(monkeypatch, tmp_path: Path):
         prompt: str,
         content: str,
         model: str,
-        temp: float,
         max_tokens: int | None = None,
     ) -> str:
-        calls.append((prompt, content, model, temp, max_tokens))
+        calls.append((prompt, content, model, max_tokens))
         return f"{content}[{prompt}]"
 
     monkeypatch.setattr(orch, "send_prompt", fake_send_prompt)
@@ -38,13 +37,13 @@ def test_process_folder(monkeypatch, tmp_path: Path):
     p2 = tmp_path / "p2.txt"
     p2.write_text("p2")
 
-    orch.process_folder(tmp_path, [p1, p2], model="m", temp=0.5)
+    orch.process_folder(tmp_path, [p1, p2], model="m")
 
     assert (tmp_path / "a.md").read_text() == "A[p1][p2]"
     assert (sub / "b.md").read_text() == "B[p1][p2]"
     assert (tmp_path / ".hidden.md").read_text() == "hidden"
     assert len(calls) == 4
-    assert all(call[2:] == ("m", 0.5, None) for call in calls)
+    assert all(call[2:] == ("m", None) for call in calls)
 
 
 def test_process_folder_dry_run(monkeypatch, tmp_path: Path, capsys):
@@ -63,7 +62,7 @@ def test_process_folder_dry_run(monkeypatch, tmp_path: Path, capsys):
     p1 = tmp_path / "p1.txt"
     p1.write_text("p1")
 
-    orch.process_folder(tmp_path, [p1], model="m", temp=0.5, dry_run=True)
+    orch.process_folder(tmp_path, [p1], model="m", dry_run=True)
 
     assert send_calls == []
     assert write_calls == []
@@ -81,7 +80,6 @@ def test_process_folder_verbose(monkeypatch, tmp_path: Path, capsys):
         prompt: str,
         content: str,
         model: str,
-        temp: float,
         max_tokens: int | None = None,
     ) -> str:
         return f"{content}[{prompt}]"
@@ -96,7 +94,7 @@ def test_process_folder_verbose(monkeypatch, tmp_path: Path, capsys):
     p2 = tmp_path / "p2.txt"
     p2.write_text("p2")
 
-    orch.process_folder(tmp_path, [p1, p2], model="m", temp=0.5, verbose=True)
+    orch.process_folder(tmp_path, [p1, p2], model="m", verbose=True)
 
     out_lines = capsys.readouterr().out.splitlines()
     assert "a.md: pass 1/2" in out_lines[0]
@@ -113,7 +111,6 @@ def test_process_folder_max_tokens(monkeypatch, tmp_path: Path):
         prompt: str,
         content: str,
         model: str,
-        temp: float,
         max_tokens: int | None = None,
     ) -> str:
         captured["max_tokens"] = max_tokens
@@ -125,6 +122,6 @@ def test_process_folder_max_tokens(monkeypatch, tmp_path: Path):
     p = tmp_path / "p.txt"
     p.write_text("p")
 
-    orch.process_folder(tmp_path, [p], model="m", temp=0.5, max_tokens=99)
+    orch.process_folder(tmp_path, [p], model="m", max_tokens=99)
 
     assert captured["max_tokens"] == 99

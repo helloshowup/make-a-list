@@ -25,7 +25,6 @@ mdgpt = "md_batch_gpt.cli:app"
 
 [tool.md_batch_gpt]
 model = "o3"
-temperature = 0.2
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
