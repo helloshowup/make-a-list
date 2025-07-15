@@ -16,6 +16,9 @@ dependencies = [
 [tool.poetry]
 packages = [{ include = "md_batch_gpt" }]
 
+[tool.poetry.scripts]
+mdgpt = "md_batch_gpt.cli:app"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
