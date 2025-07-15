@@ -8,11 +8,22 @@ from .openai_client import send_prompt
 
 
 def process_folder(
-    folder: Path, prompt_paths: List[Path], model: str, temp: float
+    folder: Path, prompt_paths: List[Path], model: str, temp: float, dry_run: bool = False
 ) -> None:
-    """Process Markdown files in *folder* using prompts from *prompt_paths*."""
+    """Process Markdown files in *folder* using prompts from *prompt_paths*.
+
+    When *dry_run* is True, print the files that would be processed and the
+    number of prompts, but make no changes.
+    """
     prompts = [Path(p).read_text() for p in prompt_paths]
-    for md_file in iter_markdown_files(folder):
+    files = list(iter_markdown_files(folder))
+    if dry_run:
+        for f in files:
+            print(f)
+        print(f"Prompt count: {len(prompts)}")
+        return
+
+    for md_file in files:
         text = md_file.read_text()
         for prompt in prompts:
             text = send_prompt(prompt, text, model, temp)
