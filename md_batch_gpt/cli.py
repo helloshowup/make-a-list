@@ -18,7 +18,9 @@ def run(
     ),
     model: str = typer.Option("o3", "--model", help="OpenAI model to use"),
     temp: float = typer.Option(0.2, "--temp", help="Sampling temperature"),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"
+    ),
 ) -> None:
     """Run the batch processor on *folder* using *prompts*."""
     if verbose:

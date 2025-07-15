@@ -7,7 +7,9 @@ from .file_io import iter_markdown_files, write_atomic
 from .openai_client import send_prompt
 
 
-def process_folder(folder: Path, prompt_paths: List[Path], model: str, temp: float) -> None:
+def process_folder(
+    folder: Path, prompt_paths: List[Path], model: str, temp: float
+) -> None:
     """Process Markdown files in *folder* using prompts from *prompt_paths*."""
     for md_file in iter_markdown_files(folder):
         text = md_file.read_text()
