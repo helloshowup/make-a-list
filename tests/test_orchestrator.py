@@ -125,3 +125,26 @@ def test_process_folder_max_tokens(monkeypatch, tmp_path: Path):
     orch.process_folder(tmp_path, [p], model="m", max_tokens=99)
 
     assert captured["max_tokens"] == 99
+
+
+def test_process_folder_invalid_bytes(monkeypatch, tmp_path: Path):
+    monkeypatch.setenv("OPENAI_API_KEY", "dummy")
+    orch = import_orchestrator()
+
+    def fake_send_prompt(
+        prompt: str, content: str, model: str, max_tokens: int | None = None
+    ) -> str:
+        return f"{content}[{prompt}]"
+
+    monkeypatch.setattr(orch, "send_prompt", fake_send_prompt)
+
+    md = tmp_path / "a.md"
+    md.write_bytes(b"A\xffB")
+
+    p = tmp_path / "p.txt"
+    p.write_bytes(b"p\xfe")
+
+    orch.process_folder(tmp_path, [p], model="m")
+
+    # Replacement character should appear for invalid bytes
+    assert md.read_text(encoding="utf-8") == "A\ufffdB[p\ufffd]"
