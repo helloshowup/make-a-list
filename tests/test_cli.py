@@ -51,7 +51,6 @@ def test_run_max_tokens(monkeypatch, tmp_path: Path):
         folder: Path,
         prompt_paths: list[Path],
         model: str,
-        temp: float,
         max_tokens: int | None = None,
         dry_run: bool = False,
         verbose: bool = False,

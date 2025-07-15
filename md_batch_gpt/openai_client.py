@@ -47,13 +47,12 @@ def _chat_request(
 def send_prompt(
     prompt: str,
     content: str,
-    model: str = "o3",
-    temp: float = 0.2,
-    max_tokens: int | None = None,
+    model: str,
+    max_tokens: int | None,
 ) -> str:
     """Send `content` with a system `prompt` and return the assistant message text."""
     messages = [
         {"role": "system", "content": prompt},
         {"role": "user", "content": content},
     ]
-    return _chat_request(messages, model=model, temperature=temp, max_tokens=max_tokens)
+    return _chat_request(messages, model=model, temperature=1, max_tokens=max_tokens)

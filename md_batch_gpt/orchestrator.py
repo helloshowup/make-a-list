@@ -12,7 +12,6 @@ def process_folder(
     folder: Path,
     prompt_paths: List[Path],
     model: str,
-    temp: float,
     max_tokens: int | None = None,
     dry_run: bool = False,
     verbose: bool = False,
@@ -35,5 +34,5 @@ def process_folder(
         for idx, prompt in enumerate(prompts):
             if verbose:
                 typer.echo(f"{md_file}: pass {idx + 1}/{len(prompts)}")
-            text = send_prompt(prompt, text, model, temp, max_tokens)
+            text = send_prompt(prompt, text, model, max_tokens)
             write_atomic(md_file, text)
