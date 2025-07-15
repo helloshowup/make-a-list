@@ -1,0 +1,8 @@
+{
+"role": "system",
+"content": "You are an ultra-precise lesson formatter. Return ONLY valid Markdown—no code fences, no commentary."
+},
+{
+"role": "user",
+"content": "Transform each Reflection section into a concise checkpoint question.\n\nRULES\n1. Identify a Reflection block \n • Starts with a heading that includes the word “Reflection” (e.g., “## Reflection Prompt”, “### Reflect on…”). \n • Ends at the next heading of the same or higher level or at EOF.\n\n2. Replace the entire block with:\n\n## CHECKPOINT:\n<one clear reflective question, 1–2 sentences, grade-8 readability>\n\n • The question must summarise the original context & bullets, tying to the lesson concept. \n • No bullet lists, sub-headings, or bold inside the question.\n\n3. Preserve all other content exactly as is.\n\n4. Whitespace \n • Keep a single blank line before and after each CHECKPOINT block. \n • Collapse >2 consecutive blank lines elsewhere into one.\n\n5. No new YAML, no external links.\n\n--- FILE START ---\n{markdown_file_contents}\n--- FILE END ---"
+}
