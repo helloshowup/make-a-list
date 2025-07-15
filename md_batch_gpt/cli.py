@@ -15,6 +15,7 @@ def validate_prompts(_: typer.Context, value: Tuple[Path, ...]) -> List[Path]:
             raise typer.BadParameter(f"File not found: {p}")
     return list(value)
 
+
 app = typer.Typer()
 
 
@@ -22,11 +23,17 @@ app = typer.Typer()
 def run(
     folder: Path = typer.Argument(..., exists=True, file_okay=False, dir_okay=True),
     prompts: List[Path] = typer.Option(
-        ..., "--prompts", help="Space-separated list of prompt files", nargs=-1, callback=validate_prompts
+        ...,
+        "--prompts",
+        help="Space-separated list of prompt files",
+        nargs=-1,
+        callback=validate_prompts,
     ),
     model: str = typer.Option("o3", "--model", help="OpenAI model to use"),
     temp: float = typer.Option(0.2, "--temp", help="Sampling temperature"),
-    max_tokens: int | None = typer.Option(None, "--max-tokens", help="Max tokens for completion"),
+    max_tokens: int | None = typer.Option(
+        None, "--max-tokens", help="Max tokens for completion"
+    ),
     verbose: bool = typer.Option(
         False, "--verbose", "-v", help="Enable verbose output"
     ),

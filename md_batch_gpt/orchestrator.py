@@ -34,6 +34,6 @@ def process_folder(
         text = md_file.read_text()
         for idx, prompt in enumerate(prompts):
             if verbose:
-                typer.echo(f"{md_file}: pass {idx+1}/{len(prompts)}")
+                typer.echo(f"{md_file}: pass {idx + 1}/{len(prompts)}")
             text = send_prompt(prompt, text, model, temp, max_tokens)
             write_atomic(md_file, text)
