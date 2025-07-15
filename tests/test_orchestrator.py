@@ -39,3 +39,29 @@ def test_process_folder(monkeypatch, tmp_path: Path):
     assert (tmp_path / ".hidden.md").read_text() == "hidden"
     assert len(calls) == 4
     assert all(call[2:] == ("m", 0.5) for call in calls)
+
+
+def test_process_folder_dry_run(monkeypatch, tmp_path: Path, capsys):
+    monkeypatch.setenv("OPENAI_API_KEY", "dummy")
+    orch = import_orchestrator()
+
+    send_calls = []
+    write_calls = []
+
+    monkeypatch.setattr(orch, "send_prompt", lambda *a, **k: send_calls.append(True))
+    monkeypatch.setattr(orch, "write_atomic", lambda *a, **k: write_calls.append(True))
+
+    (tmp_path / "a.md").write_text("A")
+    (tmp_path / "b.md").write_text("B")
+
+    p1 = tmp_path / "p1.txt"
+    p1.write_text("p1")
+
+    orch.process_folder(tmp_path, [p1], model="m", temp=0.5, dry_run=True)
+
+    assert send_calls == []
+    assert write_calls == []
+    out = capsys.readouterr().out
+    assert "a.md" in out
+    assert "b.md" in out
+    assert "Prompt count: 1" in out

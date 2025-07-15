@@ -29,13 +29,18 @@ def run(
     verbose: bool = typer.Option(
         False, "--verbose", "-v", help="Enable verbose output"
     ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="List files to be processed without sending prompts",
+    ),
 ) -> None:
     """Run the batch processor on *folder* using *prompts*."""
     if verbose:
         typer.echo(f"Folder: {folder}")
         typer.echo(f"Prompts: {', '.join(str(p) for p in prompts)}")
         typer.echo(f"Model: {model} Temperature: {temp}")
-    process_folder(folder, list(prompts), model=model, temp=temp)
+    process_folder(folder, list(prompts), model=model, temp=temp, dry_run=dry_run)
     if verbose:
         typer.echo("Done")
 
