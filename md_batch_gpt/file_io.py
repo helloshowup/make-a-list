@@ -6,6 +6,12 @@ import os
 from typing import Iterator
 
 
+def read_text(path: Path) -> str:
+    """Return the contents of *path* as UTF-8 text."""
+    path = Path(path)
+    return path.read_text(encoding="utf-8")
+
+
 def iter_markdown_files(folder: Path) -> Iterator[Path]:
     """Yield paths to Markdown files under *folder* skipping dotfiles."""
     folder = Path(folder)
