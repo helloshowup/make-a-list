@@ -21,7 +21,9 @@ def write_atomic(path: Path, data: str) -> None:
     """Atomically write *data* to *path* using a temporary file."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as tmp:
+    with NamedTemporaryFile(
+        "w", encoding="utf-8", dir=path.parent, delete=False
+    ) as tmp:
         tmp.write(data)
         tmp.flush()
         os.fsync(tmp.fileno())

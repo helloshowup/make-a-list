@@ -1,4 +1,5 @@
 """OpenAI chat completion client utilities."""
+
 from __future__ import annotations
 
 from typing import Iterable
@@ -30,7 +31,7 @@ def _chat_request(messages: Iterable[dict], model: str, temperature: float):
             if exc.status_code not in {429, 502}:
                 raise
         if attempt < 2:
-            time.sleep(2 ** attempt)
+            time.sleep(2**attempt)
     # If we fall through, raise the last captured exception
     if last_exc:
         raise last_exc
