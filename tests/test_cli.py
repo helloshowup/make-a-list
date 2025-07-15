@@ -1,7 +1,6 @@
 import importlib
 from pathlib import Path
 
-import typer
 from typer.testing import CliRunner
 
 
@@ -13,14 +12,6 @@ def import_cli():
 
 def test_run_dry_run(monkeypatch, tmp_path: Path):
     monkeypatch.setenv("OPENAI_API_KEY", "dummy")
-
-    original_option = typer.Option
-
-    def fake_option(*args, **kwargs):
-        kwargs.pop("nargs", None)
-        return original_option(*args, **kwargs)
-
-    monkeypatch.setattr(typer, "Option", fake_option)
 
     cli = import_cli()
     monkeypatch.setattr("md_batch_gpt.orchestrator.send_prompt", lambda *a, **k: "")
@@ -51,14 +42,6 @@ def test_run_dry_run(monkeypatch, tmp_path: Path):
 
 def test_run_max_tokens(monkeypatch, tmp_path: Path):
     monkeypatch.setenv("OPENAI_API_KEY", "dummy")
-
-    original_option = typer.Option
-
-    def fake_option(*args, **kwargs):
-        kwargs.pop("nargs", None)
-        return original_option(*args, **kwargs)
-
-    monkeypatch.setattr(typer, "Option", fake_option)
 
     cli = import_cli()
 

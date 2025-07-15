@@ -26,7 +26,6 @@ def run(
         ...,
         "--prompts",
         help="Space-separated list of prompt files",
-        nargs=-1,
         callback=validate_prompts,
     ),
     model: str = typer.Option("o3", "--model", help="OpenAI model to use"),
