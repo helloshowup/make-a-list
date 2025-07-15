@@ -76,3 +76,30 @@ def test_run_max_tokens(monkeypatch, tmp_path: Path):
 
     assert result.exit_code == 0, result.stdout
     assert captured["max_tokens"] == 123
+
+
+def test_run_auto_prompt_dir(monkeypatch, tmp_path: Path):
+    monkeypatch.setenv("OPENAI_API_KEY", "dummy")
+
+    cli = import_cli()
+    monkeypatch.setattr("md_batch_gpt.orchestrator.send_prompt", lambda *a, **k: "")
+
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "a.md").write_text("A")
+
+    prompts_dir = tmp_path / "prompts"
+    prompts_dir.mkdir()
+    for i in range(1, 4):
+        (prompts_dir / f"{i:02d}.txt").write_text(f"p{i}")
+
+    dummy_cli_path = tmp_path / "pkg" / "cli.py"
+    dummy_cli_path.parent.mkdir()
+    dummy_cli_path.write_text("")
+    monkeypatch.setattr(cli, "__file__", str(dummy_cli_path))
+
+    runner = CliRunner()
+    result = runner.invoke(cli.app, [str(docs), "--verbose"])
+
+    assert result.exit_code == 0, result.stdout
+    assert "pass 3/3" in result.stdout

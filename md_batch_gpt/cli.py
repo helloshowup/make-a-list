@@ -23,7 +23,7 @@ app = typer.Typer()
 def run(
     folder: Path = typer.Argument(..., exists=True, file_okay=False, dir_okay=True),
     prompts: List[Path] = typer.Option(
-        ...,
+        [],
         "--prompts",
         help="Space-separated list of prompt files",
         callback=validate_prompts,
@@ -43,13 +43,26 @@ def run(
     ),
 ) -> None:
     """Run the batch processor on *folder* using *prompts*."""
+    prompt_list = list(prompts)
+    if len(prompt_list) == 0:
+        default_dir = Path(__file__).parent.parent / "prompts"
+        prompt_paths = sorted(default_dir.glob("*.txt"))
+        if not prompt_paths:
+            raise typer.BadParameter(
+                f"No prompt files found in {default_dir}. "
+                "Pass --prompts explicitly or add *.txt files."
+            )
+        prompt_list = list(prompt_paths)
+
     if verbose:
         typer.echo(f"Folder: {folder}")
-        typer.echo(f"Prompts: {', '.join(str(p) for p in prompts)}")
-        typer.echo(f"Model: {model} Temperature: {temp} Max tokens: {max_tokens}")
+        typer.echo(f"Prompts: {', '.join(str(p) for p in prompt_list)}")
+        typer.echo(
+            f"Model: {model} Temperature: {temp} Max tokens: {max_tokens}"
+        )
     process_folder(
         folder,
-        list(prompts),
+        prompt_list,
         model=model,
         temp=temp,
         max_tokens=max_tokens,
