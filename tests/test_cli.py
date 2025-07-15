@@ -47,3 +47,49 @@ def test_run_dry_run(monkeypatch, tmp_path: Path):
     assert "a.md" in result.stdout
     assert "b.md" in result.stdout
     assert "Prompt count: 2" in result.stdout
+
+
+def test_run_max_tokens(monkeypatch, tmp_path: Path):
+    monkeypatch.setenv("OPENAI_API_KEY", "dummy")
+
+    original_option = typer.Option
+
+    def fake_option(*args, **kwargs):
+        kwargs.pop("nargs", None)
+        return original_option(*args, **kwargs)
+
+    monkeypatch.setattr(typer, "Option", fake_option)
+
+    cli = import_cli()
+
+    captured = {}
+
+    def fake_process_folder(
+        folder: Path,
+        prompt_paths: list[Path],
+        model: str,
+        temp: float,
+        max_tokens: int | None = None,
+        dry_run: bool = False,
+        verbose: bool = False,
+    ) -> None:
+        captured["max_tokens"] = max_tokens
+
+    monkeypatch.setattr(cli, "process_folder", fake_process_folder)
+
+    (tmp_path / "a.md").write_text("A")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli.app,
+        [
+            str(tmp_path),
+            "--prompts",
+            "tests/data/p1.txt",
+            "--max-tokens",
+            "123",
+        ],
+    )
+
+    assert result.exit_code == 0, result.stdout
+    assert captured["max_tokens"] == 123
