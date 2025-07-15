@@ -40,7 +40,14 @@ def run(
         typer.echo(f"Folder: {folder}")
         typer.echo(f"Prompts: {', '.join(str(p) for p in prompts)}")
         typer.echo(f"Model: {model} Temperature: {temp}")
-    process_folder(folder, list(prompts), model=model, temp=temp, dry_run=dry_run)
+    process_folder(
+        folder,
+        list(prompts),
+        model=model,
+        temp=temp,
+        dry_run=dry_run,
+        verbose=verbose,
+    )
     if verbose:
         typer.echo("Done")
 
