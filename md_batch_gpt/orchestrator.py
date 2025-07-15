@@ -21,7 +21,9 @@ def process_folder(
     When *dry_run* is True, print the files that would be processed and the
     number of prompts, but make no changes.
     """
-    prompts = [Path(p).read_text(encoding="utf-8", errors="replace") for p in prompt_paths]
+    prompts = [
+        Path(p).read_text(encoding="utf-8", errors="replace") for p in prompt_paths
+    ]
     files = list(iter_markdown_files(folder))
     if dry_run:
         for f in files:
@@ -30,7 +32,7 @@ def process_folder(
         return
 
     for md_file in files:
-        text = md_file.read_text()
+        text = md_file.read_text(encoding="utf-8", errors="replace")
         for idx, prompt in enumerate(prompts):
             if verbose:
                 typer.echo(f"{md_file}: pass {idx + 1}/{len(prompts)}")
