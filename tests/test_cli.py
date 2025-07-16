@@ -55,6 +55,8 @@ def test_run_max_tokens(monkeypatch, tmp_path: Path):
         regex_json: Path | None = None,
         dry_run: bool = False,
         verbose: bool = False,
+        inplace: bool = False,
+        log_file: Path | None = None,
     ) -> None:
         captured["max_tokens"] = max_tokens
 
@@ -120,6 +122,8 @@ def test_run_regex_json(monkeypatch, tmp_path: Path):
         regex_json: Path | None = None,
         dry_run: bool = False,
         verbose: bool = False,
+        inplace: bool = False,
+        log_file: Path | None = None,
     ) -> None:
         captured["regex_json"] = regex_json
 

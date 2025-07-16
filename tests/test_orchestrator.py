@@ -37,7 +37,7 @@ def test_process_folder(monkeypatch, tmp_path: Path):
     p2 = tmp_path / "p2.txt"
     p2.write_text("p2")
 
-    orch.process_folder(tmp_path, [p1, p2], model="m")
+    orch.process_folder(tmp_path, [p1, p2], model="m", inplace=True)
 
     assert (tmp_path / "a.md").read_text() == "A[p1][p2]"
     assert (sub / "b.md").read_text() == "B[p1][p2]"
@@ -94,7 +94,7 @@ def test_process_folder_verbose(monkeypatch, tmp_path: Path, capsys):
     p2 = tmp_path / "p2.txt"
     p2.write_text("p2")
 
-    orch.process_folder(tmp_path, [p1, p2], model="m", verbose=True)
+    orch.process_folder(tmp_path, [p1, p2], model="m", verbose=True, inplace=True)
 
     out_lines = capsys.readouterr().out.splitlines()
     assert "a.md: pass 1/2" in out_lines[0]
@@ -122,7 +122,7 @@ def test_process_folder_max_tokens(monkeypatch, tmp_path: Path):
     p = tmp_path / "p.txt"
     p.write_text("p")
 
-    orch.process_folder(tmp_path, [p], model="m", max_tokens=99)
+    orch.process_folder(tmp_path, [p], model="m", max_tokens=99, inplace=True)
 
     assert captured["max_tokens"] == 99
 
@@ -144,7 +144,7 @@ def test_process_folder_invalid_bytes(monkeypatch, tmp_path: Path):
     p = tmp_path / "p.txt"
     p.write_bytes(b"p\xfe")
 
-    orch.process_folder(tmp_path, [p], model="m")
+    orch.process_folder(tmp_path, [p], model="m", inplace=True)
 
     # Replacement character should appear for invalid bytes
     assert md.read_text(encoding="utf-8") == "A\ufffdB[p\ufffd]"

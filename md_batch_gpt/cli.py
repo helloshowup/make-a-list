@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List, Tuple
 import json
+from .log_io import append_log_record
 
 import typer
 
@@ -49,6 +50,16 @@ def run(
         "--dry-run",
         help="List files to be processed without sending prompts",
     ),
+    inplace: bool = typer.Option(
+        False,
+        "--inplace/--no-inplace",
+        help="Toggle rewrite vs extraction",
+    ),
+    log_file: Path = typer.Option(
+        Path("extracted.txt"),
+        "--log-file",
+        help="Path for extraction log",
+    ),
 ) -> None:
     """Run the batch processor on *folder* using *prompts*."""
     prompt_list = list(prompts)
@@ -76,6 +87,8 @@ def run(
         regex_json=regex_json,
         dry_run=dry_run,
         verbose=verbose,
+        inplace=inplace,
+        log_file=log_file,
     )
     if verbose:
         typer.echo("Done")
