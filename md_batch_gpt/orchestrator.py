@@ -46,4 +46,5 @@ def process_folder(
                 write_atomic(md_file, text)
             else:
                 append_log_record(Path(log_file), md_file, prompt_path, text)
-
+                if verbose:
+                    typer.echo(f"log record {idx + 1}: {md_file} {prompt_path.name}")

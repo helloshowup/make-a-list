@@ -31,6 +31,10 @@ poetry run mdgpt run \
   --no-inplace                      # default; explicit for clarity
 ```
 
+The `--log-file` path may be relative or absolute; relative paths are resolved
+against your current working directory.
+If the path cannot be written to, the command exits with an error.
+
 ### Log Record Format (human-readable blocks)
 
 Each record starts with a header line, then the model output, then a `---` separator:
@@ -65,10 +69,12 @@ In this mode the tool writes the transformed text back to the same file atomical
 | --model | str | from pyproject.toml or o3 fallback | Passed to OpenAI Chat Completions. |
 | --max-tokens | int | None | Cap completion size. |
 | --regex-json | path | None | Optional regex filters (future / experimental). |
-| --verbose, -v | flag | False | Echo progress (file, pass idx). |
+| --verbose, -v | flag | False | Echo progress (file, pass idx); also prints log record info in Extraction Mode. |
 | --dry-run | flag | False | Print files + prompt count; no API calls; no log writes; no disk changes. |
 | --log-file | path | ./extracted.txt | Where Extraction Mode appends records. (new) |
 | --inplace / --no-inplace | flag | --no-inplace | Toggle Extraction vs Rewrite modes. (new) |
+
+When verbose mode is active, each log record is announced with its index, file path, and prompt name.
 
 ### Dry Run
 
