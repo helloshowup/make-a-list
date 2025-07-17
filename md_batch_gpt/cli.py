@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import List, Tuple
-import json
-from .log_io import append_log_record
 
 import typer
 
@@ -79,6 +77,7 @@ def run(
         typer.echo(f"Model: {model} Max tokens: {max_tokens}")
         if regex_json:
             typer.echo(f"Regex JSON: {regex_json}")
+    resolved_log_file = Path.cwd() / log_file
     process_folder(
         folder,
         prompt_list,
@@ -88,7 +87,7 @@ def run(
         dry_run=dry_run,
         verbose=verbose,
         inplace=inplace,
-        log_file=log_file,
+        log_file=resolved_log_file,
     )
     if verbose:
         typer.echo("Done")

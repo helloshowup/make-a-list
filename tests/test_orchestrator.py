@@ -101,6 +101,32 @@ def test_process_folder_verbose(monkeypatch, tmp_path: Path, capsys):
     assert "a.md: pass 2/2" in out_lines[1]
 
 
+def test_process_folder_verbose_logging(monkeypatch, tmp_path: Path, capsys):
+    monkeypatch.setenv("OPENAI_API_KEY", "dummy")
+    orch = import_orchestrator()
+
+    monkeypatch.setattr(
+        orch,
+        "send_prompt",
+        lambda prompt, content, model, max_tokens=None: f"{content}[{prompt}]",
+    )
+
+    md = tmp_path / "a.md"
+    md.write_text("A")
+    p = tmp_path / "p.txt"
+    p.write_text("p")
+
+    log_file = tmp_path / "log.txt"
+
+    orch.process_folder(
+        tmp_path, [p], model="m", verbose=True, inplace=False, log_file=log_file
+    )
+
+    lines = capsys.readouterr().out.splitlines()
+    assert "a.md: pass 1/1" in lines[0]
+    assert f"log record 1: {md} {p.name}" in lines[1]
+
+
 def test_process_folder_max_tokens(monkeypatch, tmp_path: Path):
     monkeypatch.setenv("OPENAI_API_KEY", "dummy")
     orch = import_orchestrator()
